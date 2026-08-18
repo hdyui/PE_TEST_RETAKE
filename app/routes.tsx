@@ -1,29 +1,28 @@
-import React from "react";
-import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
+import { RequireAuth, RequireUnAuth } from "../src/guard/RequireAuth";
+import { EmployeesPage } from "../src/features/employees/pages/EmployeesPage";
 import { MainLayout } from "../src/pages/MainLayout";
 import { LoginPage } from "../src/pages/LoginPage";
-import { HomePage } from "../src/pages/HomePage";
-
-function RequireUnAuth() {
-  return <Outlet />;
-}
+import EmployeesCreatepage from "../src/features/employees/pages/EmployeesCreatepage";
 
 export const router = createBrowserRouter([
   {
+    element: <RequireUnAuth />,
+    children: [{ path: "/login", element: <LoginPage /> }],
+  },
+  {
     path: "/",
-    element: <MainLayout />,
+    element: <RequireAuth />,
     children: [
       {
-        index: true,
-        element: <LoginPage />,
-      },
-      {
-        element: <RequireUnAuth />,
+        element: <MainLayout />,
         children: [
-          { path: "login", element: <LoginPage /> },
-          { path: "*", element: <Navigate to="/login" replace /> },
+          { index: true, element: <Navigate to="/employees" replace /> },
+          { path: "employees", element: <EmployeesPage /> },
+          { path: "employees/create", element: <EmployeesCreatepage /> },
         ],
       },
     ],
   },
+  { path: "*", element: <Navigate to="/" replace /> },
 ]);

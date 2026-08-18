@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useLoginMutation } from "../features/auth/hook/useAuth";
-import { LoginSchema, type loginSchemaType } from "../features/auth/schema";
+import { LoginSchema, type LoginSchemaType } from "../features/auth/schema";
 
 export function LoginPage() {
   const loginMutation = useLoginMutation();
@@ -10,7 +10,7 @@ export function LoginPage() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<loginSchemaType>({
+  } = useForm<LoginSchemaType>({
     mode: "onTouched",
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -19,8 +19,12 @@ export function LoginPage() {
     },
   });
 
-  const onSubmit = async (data: loginSchemaType) => {
-    loginMutation.mutate(data);
+  const onSubmit = async (data: LoginSchemaType) => {
+    try {
+      await loginMutation.mutateAsync(data);
+    } catch {
+      return;
+    }
   };
 
   return (
@@ -30,8 +34,14 @@ export function LoginPage() {
         <div style={{ display: "grid", gap: 12 }}>
           <div>
             <label htmlFor="email">Email</label>
-            <input id="email" {...register("email")} style={{ width: "100%", padding: 8 }} />
-            {errors.email && <p style={{ color: "crimson" }}>{errors.email.message}</p>}
+            <input
+              id="email"
+              {...register("email")}
+              style={{ width: "100%", padding: 8 }}
+            />
+            {errors.email && (
+              <p style={{ color: "crimson" }}>{errors.email.message}</p>
+            )}
           </div>
 
           <div>
@@ -42,12 +52,22 @@ export function LoginPage() {
               {...register("password")}
               style={{ width: "100%", padding: 8 }}
             />
-            {errors.password && <p style={{ color: "crimson" }}>{errors.password.message}</p>}
+            {errors.password && (
+              <p style={{ color: "crimson" }}>{errors.password.message}</p>
+            )}
           </div>
 
-          <button type="submit" disabled={isSubmitting || loginMutation.isPending}>
+          <button
+            type="submit"
+            disabled={isSubmitting || loginMutation.isPending}
+          >
             {loginMutation.isPending ? "Logging in..." : "Login"}
           </button>
+          {loginMutation.isError && (
+            <p role="alert" style={{ color: "crimson" }}>
+              Đăng nhập thất bại. Vui lòng kiểm tra kết nối API và thử lại.
+            </p>
+          )}
         </div>
       </form>
     </div>

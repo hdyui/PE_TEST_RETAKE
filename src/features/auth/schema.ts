@@ -1,11 +1,11 @@
-import z from "Zod";
+import { z } from "zod";
 
 export const LoginSchema = z.object({
-  email: z.string().min(1, "Email can not empty!!!").max(100, "Email to long!"),
+  email: z.string().min(1, "Email không được để trống.").email("Email không hợp lệ."),
   password: z
     .string()
-    .min(6, "Password must more than or equal with 6 character!")
-    .max(100, "Password to long!"),
+    .min(6, "Mật khẩu phải có ít nhất 6 ký tự.")
+    .max(100, "Mật khẩu không được quá 100 ký tự."),
 });
 
-export type loginSchemaType = z.infer<typeof LoginSchema>;
+export type LoginSchemaType = z.infer<typeof LoginSchema>;

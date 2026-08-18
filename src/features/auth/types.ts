@@ -1,14 +1,21 @@
 export type AuthResponse = {
-  id?: number | string;
-  email?: string;
-  role?: string;
-  name?: string;
-  accessToken?: string;
-  token?: string;
-  message?: string;
+  id: string;
+  email: string;
+  role: string;
+  name: string;
+  accessToken: string;
+  message: string;
 };
 
 export type User = {
-  id: number;
+  id: string;
   name: string;
+  email: string;
+  role: string;
+};
+
+export type AuthSession = {
+  accessToken: string;
+  user: User;
+  message: string;
 };
